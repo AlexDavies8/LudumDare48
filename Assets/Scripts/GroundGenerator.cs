@@ -10,7 +10,7 @@ public class GroundGenerator : MonoBehaviour
     {
         int realDepth = depth - gridPosition.y;
         GroundGroup group = GetGroup(realDepth);
-        Tile tile = tileFactory.CreateTile(gridPosition, Tile.TileType.Ground);
+        Tile tile = tileFactory.CreateTile(gridPosition, Tile.TileType.Ground, group.prefab);
         if (group != null)
             tile.GetComponent<SpriteRenderer>().sprite = group.sprites[Random.Range(0, group.sprites.Length)];
 
@@ -31,6 +31,7 @@ public class GroundGenerator : MonoBehaviour
     [System.Serializable]
     public class GroundGroup
     {
+        public GameObject prefab;
         public Sprite[] sprites;
         public int startDepth;
     }

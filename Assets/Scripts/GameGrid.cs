@@ -31,7 +31,6 @@ public class GameGrid : MonoBehaviour
                 }
             }
         }
-        ExplodeChains();
     }
 
     public bool StepPair(Pair pair)
@@ -73,7 +72,7 @@ public class GameGrid : MonoBehaviour
         return true;
     }
 
-    public void ExplodeChains()
+    public bool ExplodeChains()
     {
         List<Vector2Int> visited = new List<Vector2Int>();
         List<List<Vector2Int>> chains = new List<List<Vector2Int>>();
@@ -90,6 +89,10 @@ public class GameGrid : MonoBehaviour
         }
 
         ExplodeChainsCallback?.Invoke(chains);
+
+        foreach (List<Vector2Int> chain in chains)
+            if (chain.Count >= 4) return true;
+        return false;
     }
 
     void RecurseChain(Vector2Int position, List<Vector2Int> visited, List<Vector2Int> chain)
@@ -132,6 +135,18 @@ public class GameGrid : MonoBehaviour
         }
         return -1;
     }
+    public int GetLowestEmpty()
+    {
+        for (int y = 0; y <= GridSize.y; y++)
+        {
+            for (int x = 0; x < GridSize.x; x++)
+            {
+                if (Grid[x, y] == null)
+                    return y;
+            }
+        }
+        return -1;
+    }
 
     public void RaiseGrid(int amount)
     {
@@ -159,6 +174,8 @@ public class GameGrid : MonoBehaviour
 
     public void MovePair(Pair pair, Vector2Int offset)
     {
+        if (pair == null) return;
+
         Vector2Int pivotOffset = pair.Pivot.GridPosition + offset;
         Vector2Int outerOffset = pair.Outer.GridPosition + offset;
 
@@ -175,6 +192,7 @@ public class GameGrid : MonoBehaviour
     Vector2Int[] RotationOffsets = { Vector2Int.up, Vector2Int.right, Vector2Int.down, Vector2Int.left};
     public void RotatePairCW(Pair pair)
     {
+        if (pair == null) return;
         for (int i = 1; i < 4; i++)
         {
             int newRotation = (pair.Rotation + i) % 4;
@@ -198,6 +216,7 @@ public class GameGrid : MonoBehaviour
     }
     public void RotatePairACW(Pair pair)
     {
+        if (pair == null) return;
         for (int i = 1; i < 4; i++)
         {
             int newRotation = (pair.Rotation + 4 - i) % 4;
