@@ -9,6 +9,6 @@ public class FitSpriteToScreen : MonoBehaviour
 
     private void Update()
     {
-        _spriteRenderer.size = new Vector2(_mainCamera.orthographicSize * 2 * _mainCamera.aspect, _mainCamera.orthographicSize * 2);   
+        _spriteRenderer.size = new Vector2(_mainCamera.orthographicSize * 2 * _mainCamera.aspect * 2, _mainCamera.orthographicSize * 2 * 2);   
     }
 }

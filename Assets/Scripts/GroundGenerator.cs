@@ -22,7 +22,7 @@ public class GroundGenerator : MonoBehaviour
         GroundGroup group = null;
         foreach (GroundGroup g in groups)
         {
-            if (depth >= g.startDepth && (group == null || g.startDepth < group.startDepth))
+            if (depth >= g.startDepth && (group == null || g.startDepth > group.startDepth))
                 group = g;
         }
         return group;

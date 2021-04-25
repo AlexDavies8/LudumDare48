@@ -240,8 +240,10 @@ public class GameGrid : MonoBehaviour
     }
     public void DecomposePair(Pair pair)
     {
-        Grid[pair.Pivot.GridPosition.x, pair.Pivot.GridPosition.y] = pair.Pivot;
-        Grid[pair.Outer.GridPosition.x, pair.Outer.GridPosition.y] = pair.Outer;
+        if (InsideGrid(pair.Pivot.GridPosition))
+            Grid[pair.Pivot.GridPosition.x, pair.Pivot.GridPosition.y] = pair.Pivot;
+        if (InsideGrid(pair.Outer.GridPosition))
+            Grid[pair.Outer.GridPosition.x, pair.Outer.GridPosition.y] = pair.Outer;
     }
 
     public bool InsideGrid(Vector2Int pos)
