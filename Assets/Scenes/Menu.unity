@@ -2726,8 +2726,40 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 4492718912283335952, guid: 81eb796d71237ab44a4e75d4eeb3a850, type: 3}
+      propertyPath: m_CropFrameX
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4492718912283335952, guid: 81eb796d71237ab44a4e75d4eeb3a850, type: 3}
+      propertyPath: m_CropFrameY
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4492718912283335952, guid: 81eb796d71237ab44a4e75d4eeb3a850, type: 3}
       propertyPath: m_RefResolutionX
       value: 227
+      objectReference: {fileID: 0}
+    - target: {fileID: 4492718912283335953, guid: 81eb796d71237ab44a4e75d4eeb3a850, type: 3}
+      propertyPath: m_ForceIntoRT
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4492718912283335953, guid: 81eb796d71237ab44a4e75d4eeb3a850, type: 3}
+      propertyPath: orthographic size
+      value: 8.375
+      objectReference: {fileID: 0}
+    - target: {fileID: 4492718912283335953, guid: 81eb796d71237ab44a4e75d4eeb3a850, type: 3}
+      propertyPath: m_NormalizedViewPortRect.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4492718912283335953, guid: 81eb796d71237ab44a4e75d4eeb3a850, type: 3}
+      propertyPath: m_NormalizedViewPortRect.y
+      value: 0.0037037036
+      objectReference: {fileID: 0}
+    - target: {fileID: 4492718912283335953, guid: 81eb796d71237ab44a4e75d4eeb3a850, type: 3}
+      propertyPath: m_NormalizedViewPortRect.width
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4492718912283335953, guid: 81eb796d71237ab44a4e75d4eeb3a850, type: 3}
+      propertyPath: m_NormalizedViewPortRect.height
+      value: 0.9925926
       objectReference: {fileID: 0}
     - target: {fileID: 4492718913785870218, guid: 81eb796d71237ab44a4e75d4eeb3a850, type: 3}
       propertyPath: m_RootOrder

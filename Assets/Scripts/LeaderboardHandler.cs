@@ -1,77 +1,98 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.Networking;
 
 public class LeaderboardHandler : MonoBehaviour
 {
-    const string _privateCode = @"dmsGV7a2Ck-awI4BsBq9nA-HwBSSDkFkWu2M2NlBVUcg";
+	/*
+	const string _appPassword = @"WYbsgbsJszOwtHDfS$rn";
+	const string _dbPassword = @"v^E4aQEg-Hyk<(s4";
+	*/
+
+	const string _highscoreURL = "https://ld48.000webhostapp.com/highscore.php";
+
+	/* old leaderboard
+	const string _privateCode = @"dmsGV7a2Ck-awI4BsBq9nA-HwBSSDkFkWu2M2NlBVUcg";
     const string _publicCode = @"60858bfc8f40bb12282be45b";
 	const string _webURL = "http://dreamlo.com/lb/";
+	*/
 
 	public void SetScore(string name, int score)
     {
 		if (name.Trim().Length != 0)
-			StartCoroutine(UploadNewHighscore(name.ToUpper(), score));
-    }
-
-	IEnumerator UploadNewHighscore(string username, int score)
-	{
-		UnityWebRequest uwr = UnityWebRequest.Get($"{_webURL}{_privateCode}/add/{UnityWebRequest.EscapeURL(username)}/{score}");
-		Debug.Log($"{_webURL}{_privateCode}/add/{UnityWebRequest.EscapeURL(username)}/{score}");
-		yield return uwr.SendWebRequest();
-
-		if (uwr.result == UnityWebRequest.Result.ConnectionError)
-		{
-			Debug.LogWarning("Error sending highscore");
-		}
-		else
-		{
-			Debug.Log("Score sent successfully");
-			Debug.Log(uwr.downloadHandler.text);
-		}
+			StartCoroutine(PostScore(name.ToUpper(), score));
 	}
 
-	[ContextMenu("Download Highscores")]
 	public void DownloadHighscores(Action<LeaderboardEntry[]> callback)
 	{
-		StartCoroutine(DownloadHighscoresFromDatabase(callback));
+		StartCoroutine(GetLeaderboard(callback));
 	}
 
-	IEnumerator DownloadHighscoresFromDatabase(Action<LeaderboardEntry[]> callback)
+	IEnumerator GetLeaderboard(Action<LeaderboardEntry[]> callback)
 	{
-		UnityWebRequest uwr = UnityWebRequest.Get($"{_webURL}{_publicCode}/quote/");
+		WWWForm form = new WWWForm();
+		form.AddField("retrieve_leaderboard", "true");
+
+		UnityWebRequest uwr = UnityWebRequest.Post(_highscoreURL, form);
 
 		yield return uwr.SendWebRequest();
 
-		if (uwr.result == UnityWebRequest.Result.ConnectionError)
+		if (uwr.result != UnityWebRequest.Result.ConnectionError)
 		{
-			Debug.LogWarning("Error getting highscores");
+			Debug.Log("Leaderboard Downloaded");
+
+			List<LeaderboardEntry> entries = new List<LeaderboardEntry>();
+
+			string contents = uwr.downloadHandler.text;
+
+			Debug.Log(contents);
+
+			using (StringReader reader = new StringReader(contents))
+			{
+				string line;
+				while ((line = reader.ReadLine()) != null)
+				{
+					LeaderboardEntry entry = new LeaderboardEntry();
+					entry.name = line;
+					try
+					{
+						entry.score = int.Parse(reader.ReadLine());
+					}
+					catch (Exception e)
+					{
+						Debug.Log("Invalid score: " + e);
+						continue;
+					}
+
+					entries.Add(entry);
+				}
+			}
+			callback?.Invoke(entries.ToArray());
 		}
 		else
-		{
-			Debug.Log("Scores retrieved successfully");
-			FormatHighscores(uwr.downloadHandler.text, callback);
-		}
+			Debug.Log("Error Downloading Leaderboard");
 	}
 
-	void FormatHighscores(string textStream, Action<LeaderboardEntry[]> callback)
+	IEnumerator PostScore(string name, int score)
 	{
-		Debug.Log(textStream);
-		string[] entries = textStream.Split(new char[] { '\n' }, System.StringSplitOptions.RemoveEmptyEntries);
-		LeaderboardEntry[] highscoresList = new LeaderboardEntry[entries.Length];
+		WWWForm form = new WWWForm();
+		form.AddField("post_leaderboard", "true");
+		form.AddField("name", name);
+		form.AddField("score", score);
 
-		for (int i = 0; i < entries.Length; i++)
+		UnityWebRequest uwr = UnityWebRequest.Post(_highscoreURL, form);
+
+		yield return uwr.SendWebRequest();
+
+		if (uwr.result != UnityWebRequest.Result.ConnectionError)
 		{
-			string[] entryInfo = entries[i].Split(new char[] { ',' });
-			string username = entryInfo[0].Trim('"');
-			int score = int.Parse(entryInfo[1].Trim('"'));
-			string date = entryInfo[4].Trim('"');
-			highscoresList[i] = new LeaderboardEntry() { name=username, score=score, date=date};
+			Debug.Log("Score Posted!");
 		}
-
-		callback?.Invoke(highscoresList);
+		else
+			Debug.Log("Error Posting Score");
 	}
 
 	public struct LeaderboardEntry
